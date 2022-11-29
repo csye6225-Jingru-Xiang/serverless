@@ -6,6 +6,8 @@ name: build lambda
 on:
   pull_request:
     branches: [ "main" ]
+
+  workflow_dispatch:
     
 env:
   ARTIFACT_NAME: serverless-1.0-SNAPSHOT.jar
