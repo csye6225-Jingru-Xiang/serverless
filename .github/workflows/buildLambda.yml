@@ -25,7 +25,6 @@ jobs:
         run: |
           mkdir severless_artifact
           zip -r ${{ env.ARTIFACT_NAME }} emailVerification.js
-          mv ${{ env.ARTIFACT_NAME }} severless_artifact
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -36,8 +35,4 @@ jobs:
 
       - name: Copy File to S3
         run: |
-          aws s3 cp severless_artifact s3://csye6225-serverless-bucket --recursive
-
-      - name: update lambda function
-        run: |
-          aws lambda update-function-code --function-name csye6225-email-verification --s3-bucket csye6225-serverless-bucket --s3-key emailVerification.js
+          aws lambda update-function-code --function-name csye6225-email-verification --zip-file fileb://${{ env.ARTIFACT_NAME }}
