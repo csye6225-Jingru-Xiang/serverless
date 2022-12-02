@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     
 env:
-  ARTIFACT_NAME: serverless-1.0-SNAPSHOT.jar
+  ARTIFACT_NAME: serverless.zip
   CODEDEPLOY_APPLICATION_NAME: csye6225-webapp-deployment
   CODEDEPLOY_APPLICATION_GROUP_NAME: csye6225-webapp-deployment-group
   
@@ -21,11 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: build with maven
-        run: mvn -B package --file pom.xml
-
-      - name: package
-        run: mvn package
+      - name: build zip file
+        run: |
+          mkdir severless_artifact
+          zip -r ${{ env.ARTIFACT_NAME }} emailVerification.js
+          mv ${{ env.ARTIFACT_NAME }} severless_artifact
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -36,7 +36,8 @@ jobs:
 
       - name: Copy File to S3
         run: |
-          aws s3 cp target/serverless-1.0-SNAPSHOT.jar s3://csye6225-serverless-bucket
+          aws s3 cp ./severless_artifact s3://csye6225-serverless-bucket
+
       - name: update lambda function
         run: |
-          aws lambda update-function-code --function-name VerifyEmailFunction --s3-bucket csye6225-serverless-bucket --s3-key serverless-1.0-SNAPSHOT.jar
+          aws lambda update-function-code --function-name csye6225-email-verification --s3-bucket csye6225-serverless-bucket --s3-key emailVerification.js
