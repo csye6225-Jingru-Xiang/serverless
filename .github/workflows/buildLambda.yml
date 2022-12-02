@@ -36,7 +36,7 @@ jobs:
 
       - name: Copy File to S3
         run: |
-          aws s3 cp ./severless_artifact s3://csye6225-serverless-bucket
+          aws s3 cp severless_artifact s3://csye6225-serverless-bucket --recursive
 
       - name: update lambda function
         run: |
